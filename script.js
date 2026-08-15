@@ -1,37 +1,85 @@
 const imageInput = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
-const createPdf = document.getElementById("createPdf");
-const downloadPdf = document.getElementById("downloadPdf");
 
-let selectedImages = [];
+const addButton = document.getElementById("addButton");
+
+const emptyCard = document.getElementById("emptyCard");
+
+const imageGrid = document.getElementById("imageGrid");
+
+const selectAll = document.getElementById("selectAll");
+
+const deleteButton = document.getElementById("deleteButton");
+
+const sortButton = document.getElementById("sortButton");
+
+const finishButton = document.getElementById("finishButton");
+
+let images = [];
+
+let selectedIndexes = new Set();
+
+let draggedIndex = null;
 
 
-// ===============================
-// ADD IMAGES
-// ===============================
+/* =========================
+   OPEN FILE PICKER
+========================= */
 
-imageInput.addEventListener("change", function () {
+addButton.addEventListener("click", () => {
+    imageInput.click();
+});
 
-    const newImages = Array.from(imageInput.files);
 
-    selectedImages.push(...newImages);
+emptyCard.addEventListener("click", () => {
+    imageInput.click();
+});
 
-    renderImages();
+
+/* =========================
+   ADD IMAGES
+========================= */
+
+imageInput.addEventListener("change", (event) => {
+
+    const files = Array.from(event.target.files);
+
+    files.forEach(file => {
+
+        if (!file.type.match(/^image\/(jpeg|png|jpg)$/)) {
+            return;
+        }
+
+        images.push({
+            file: file,
+            url: URL.createObjectURL(file)
+        });
+
+    });
 
     imageInput.value = "";
+
+    renderImages();
 
 });
 
 
-// ===============================
-// DISPLAY IMAGES
-// ===============================
+/* =========================
+   RENDER
+========================= */
 
 function renderImages() {
 
-    preview.innerHTML = "";
+    imageGrid.innerHTML = "";
 
-    selectedImages.forEach((file, index) => {
+    if (images.length === 0) {
+
+        imageGrid.appendChild(emptyCard);
+
+        return;
+    }
+
+
+    images.forEach((image, index) => {
 
         const card = document.createElement("div");
 
@@ -42,151 +90,298 @@ function renderImages() {
         card.dataset.index = index;
 
 
-        // Image
+        /* Image wrapper */
 
-        const image = document.createElement("img");
+        const wrapper = document.createElement("div");
 
-        image.src = URL.createObjectURL(file);
-
-
-        // Page number
-
-        const pageNumber = document.createElement("div");
-
-        pageNumber.className = "page-number";
-
-        pageNumber.textContent = `Page ${index + 1}`;
+        wrapper.className = "image-wrapper";
 
 
-        // Remove button
+        const img = document.createElement("img");
 
-        const removeButton = document.createElement("button");
+        img.src = image.url;
 
-        removeButton.className = "remove-btn";
+        img.alt = `Page ${index + 1}`;
 
-        removeButton.textContent = "×";
-
-        removeButton.title = "Remove image";
+        wrapper.appendChild(img);
 
 
-        removeButton.addEventListener("click", function (event) {
+        /* Checkbox */
+
+        const checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+
+        checkbox.className = "card-checkbox";
+
+        checkbox.checked = selectedIndexes.has(index);
+
+
+        checkbox.addEventListener("click", event => {
 
             event.stopPropagation();
 
-            selectedImages.splice(index, 1);
+            if (checkbox.checked) {
+                selectedIndexes.add(index);
+            } else {
+                selectedIndexes.delete(index);
+            }
+
+        });
+
+
+        /* Remove */
+
+        const remove = document.createElement("button");
+
+        remove.className = "remove-button";
+
+        remove.textContent = "×";
+
+        remove.title = "Remove image";
+
+
+        remove.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            images.splice(index, 1);
+
+            selectedIndexes.clear();
 
             renderImages();
 
         });
 
 
-        card.appendChild(image);
+        /* Filename */
 
-        card.appendChild(pageNumber);
+        const filename = document.createElement("div");
 
-        card.appendChild(removeButton);
+        filename.className = "file-name";
 
-        preview.appendChild(card);
+        filename.textContent =
+            `page-${String(index + 1).padStart(3, "0")}.jpg`;
 
 
-        // ===============================
-        // DRAG EVENTS
-        // ===============================
+        /* Plus button */
 
-        card.addEventListener("dragstart", function () {
+        const addBetween = document.createElement("button");
+
+        addBetween.className = "add-between";
+
+        addBetween.textContent = "+";
+
+        addBetween.title = "Add image here";
+
+
+        addBetween.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            imageInput.dataset.insertIndex = index + 1;
+
+            imageInput.click();
+
+        });
+
+
+        card.appendChild(wrapper);
+
+        card.appendChild(checkbox);
+
+        card.appendChild(remove);
+
+        card.appendChild(filename);
+
+        card.appendChild(addBetween);
+
+
+        /* =========================
+           DRAG & DROP
+        ========================= */
+
+        card.addEventListener("dragstart", () => {
+
+            draggedIndex = index;
 
             card.classList.add("dragging");
 
         });
 
 
-        card.addEventListener("dragend", function () {
+        card.addEventListener("dragend", () => {
 
             card.classList.remove("dragging");
 
+            draggedIndex = null;
+
         });
 
 
-        card.addEventListener("dragover", function (event) {
+        card.addEventListener("dragover", event => {
 
             event.preventDefault();
 
-            const draggingCard =
-                document.querySelector(".dragging");
+        });
 
-            if (!draggingCard || draggingCard === card) {
+
+        card.addEventListener("drop", event => {
+
+            event.preventDefault();
+
+            const targetIndex = index;
+
+            if (draggedIndex === null ||
+                draggedIndex === targetIndex) {
+
                 return;
             }
 
-            const cards =
-                [...preview.querySelectorAll(".image-card")];
 
-            const draggingIndex =
-                cards.indexOf(draggingCard);
-
-            const targetIndex =
-                cards.indexOf(card);
+            const movedImage =
+                images.splice(draggedIndex, 1)[0];
 
 
-            if (draggingIndex < targetIndex) {
+            images.splice(targetIndex, 0, movedImage);
 
-                preview.insertBefore(
-                    draggingCard,
-                    card.nextSibling
-                );
 
-            } else {
+            selectedIndexes.clear();
 
-                preview.insertBefore(
-                    draggingCard,
-                    card
-                );
-
-            }
+            renderImages();
 
         });
 
 
-        card.addEventListener("drop", function (event) {
-
-            event.preventDefault();
-
-            updateImageOrder();
-
-        });
+        imageGrid.appendChild(card);
 
     });
 
 
-    // Enable / disable Create PDF
+    /* Add images card */
 
-    createPdf.disabled = selectedImages.length === 0;
+    const addCard = document.createElement("div");
+
+    addCard.className = "empty-card";
+
+    addCard.innerHTML = `
+        <div class="empty-plus">+</div>
+
+        <div>
+            <strong>Add images</strong>
+            <br>
+            to continue
+        </div>
+    `;
+
+
+    addCard.addEventListener("click", () => {
+
+        imageInput.click();
+
+    });
+
+
+    imageGrid.appendChild(addCard);
 
 }
 
 
-// ===============================
-// UPDATE ARRAY AFTER DRAGGING
-// ===============================
+/* =========================
+   SELECT ALL
+========================= */
 
-function updateImageOrder() {
+selectAll.addEventListener("change", () => {
 
-    const cards =
-        [...preview.querySelectorAll(".image-card")];
+    selectedIndexes.clear();
 
-    const newOrder = [];
+    if (selectAll.checked) {
 
-    cards.forEach(card => {
+        images.forEach((_, index) => {
+            selectedIndexes.add(index);
+        });
 
-        const oldIndex =
-            parseInt(card.dataset.index);
-
-        newOrder.push(selectedImages[oldIndex]);
-
-    });
-
-    selectedImages = newOrder;
+    }
 
     renderImages();
 
-}
+});
+
+
+/* =========================
+   DELETE SELECTED
+========================= */
+
+deleteButton.addEventListener("click", () => {
+
+    if (selectedIndexes.size === 0) {
+        return;
+    }
+
+
+    images =
+        images.filter((_, index) =>
+            !selectedIndexes.has(index)
+        );
+
+
+    selectedIndexes.clear();
+
+    selectAll.checked = false;
+
+    renderImages();
+
+});
+
+
+/* =========================
+   SORT BUTTON
+========================= */
+
+sortButton.addEventListener("click", () => {
+
+    images.sort((a, b) =>
+        a.file.name.localeCompare(
+            b.file.name,
+            undefined,
+            {
+                numeric: true,
+                sensitivity: "base"
+            }
+        )
+    );
+
+
+    selectedIndexes.clear();
+
+    renderImages();
+
+});
+
+
+/* =========================
+   FINISH BUTTON
+========================= */
+
+finishButton.addEventListener("click", () => {
+
+    if (images.length === 0) {
+
+        alert("Please add some images first.");
+
+        return;
+    }
+
+
+    alert(
+        "Great! Your images are ready. PDF generation is our next step."
+    );
+
+});
+
+
+/* =========================
+   INITIAL RENDER
+========================= */
+
+renderImages();
