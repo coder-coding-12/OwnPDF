@@ -12,39 +12,145 @@
 
 <body>
 
-    <div class="container">
+    <!-- TOP TOOLBAR -->
+    <header class="toolbar">
 
-        <h1>Image to PDF</h1>
+        <!-- Add button -->
+        <div class="toolbar-left">
 
-        <p>Convert your images into a PDF</p>
+            <button class="icon-button" id="addButton" title="Add images">
+                +
+            </button>
 
-        <label for="imageInput" class="upload-btn">
-            + Add Images
-        </label>
+            <div class="divider"></div>
 
-        <input
-            type="file"
-            id="imageInput"
-            accept=".png,.jpg,.jpeg"
-            multiple
-            hidden
-        >
+            <button class="icon-button" id="undoButton" title="Undo">
+                ↶
+            </button>
 
-        <p class="sorting-info">
-            Drag and drop the images to change their order.
-        </p>
+            <button class="icon-button" id="redoButton" title="Redo">
+                ↷
+            </button>
 
-        <div id="preview"></div>
+            <button class="icon-button delete-button" id="deleteButton" title="Delete selected">
+                🗑
+            </button>
 
-        <button id="createPdf" disabled>
-            Create PDF
-        </button>
+            <!-- Paper size -->
+            <select id="pageSize">
+                <option value="a4">A4</option>
+                <option value="letter">Letter</option>
+                <option value="a3">A3</option>
+            </select>
 
-        <a id="downloadPdf" style="display: none;">
-            Download PDF
-        </a>
+            <!-- Orientation -->
+            <select id="orientation">
+                <option value="auto">Auto</option>
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+            </select>
 
-    </div>
+            <!-- Margins -->
+            <select id="margins">
+                <option value="small">Small margins</option>
+                <option value="none">No margins</option>
+                <option value="large">Large margins</option>
+            </select>
+
+        </div>
+
+
+        <!-- TOP RIGHT -->
+        <div class="toolbar-right">
+
+            <label class="toggle-container">
+
+                <input type="checkbox" id="separatePdfs">
+
+                <span class="toggle"></span>
+
+                <span>Separate PDFs</span>
+
+            </label>
+
+
+            <button class="finish-button" id="finishButton">
+                Finish <span>→</span>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace">
+
+        <div class="workspace-top">
+
+            <label class="select-all">
+                <input type="checkbox" id="selectAll">
+                <span>Select all</span>
+            </label>
+
+
+            <div class="view-controls">
+
+                <button id="sortButton" class="sort-button">
+                    <span>↓</span> A Z
+                    <span class="arrow">⌄</span>
+                </button>
+
+                <button class="view-button">
+                    ☷
+                </button>
+
+                <button class="view-button active">
+                    ▦
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGE GRID -->
+        <div id="imageGrid" class="image-grid">
+
+
+            <!-- Empty state -->
+            <div class="empty-card" id="emptyCard">
+
+                <div class="empty-plus">
+                    +
+                </div>
+
+                <div>
+                    <strong>Add images</strong>
+                    <br>
+                    to start creating your PDF
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- FILE INPUT -->
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/png,image/jpeg,image/jpg"
+        multiple
+        hidden
+    >
+
+
+    <!-- PDF LIBRARY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script src="script.js"></script>
 
