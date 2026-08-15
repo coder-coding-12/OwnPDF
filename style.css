@@ -1,349 +1,810 @@
+/* =========================================================
+   IMAGE → PDF CREATOR
+   Modern / Smooth UI
+========================================================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #eef4ff;
-    color: #222;
-    min-height: 100vh;
+:root {
+    --bg: #f4f7fc;
+    --surface: #ffffff;
+    --surface-soft: #f8faff;
+
+    --border: #e4e9f2;
+    --border-hover: #cdd7e7;
+
+    --text: #1e293b;
+    --muted: #64748b;
+
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-soft: #eaf1ff;
+
+    --danger: #ef4444;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    --shadow-sm:
+        0 1px 3px rgba(15, 23, 42, 0.06);
+
+    --shadow-md:
+        0 8px 25px rgba(15, 23, 42, 0.08);
+
+    --shadow-lg:
+        0 16px 40px rgba(15, 23, 42, 0.12);
+
+    --transition:
+        0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 
-/* =========================
-   TOP TOOLBAR
-========================= */
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            #ffffff 0,
+            #f4f7fc 45%,
+            #eef3fb 100%
+        );
+
+    color: var(--text);
+
+    min-height: 100vh;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
 
 .toolbar {
-    height: 64px;
-    background: white;
-    border-bottom: 1px solid #d9dfe8;
+    height: 68px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
-    padding-left: 12px;
+    padding: 0 0 0 14px;
 
     position: sticky;
+
     top: 0;
+
     z-index: 100;
+
+    box-shadow:
+        0 1px 10px rgba(15, 23, 42, 0.04);
 }
+
 
 .toolbar-left,
 .toolbar-right {
     display: flex;
+
     align-items: center;
+
     height: 100%;
-    gap: 8px;
+
+    gap: 7px;
 }
 
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
 .icon-button {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
 
-    border: none;
-    background: white;
-    border-radius: 6px;
+    border: 1px solid transparent;
 
-    font-size: 25px;
-    color: #555;
+    background: transparent;
+
+    border-radius: var(--radius-sm);
+
+    color: #475569;
+
+    font-size: 23px;
 
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
+    transition:
+        background var(--transition),
+        color var(--transition),
+        transform var(--transition),
+        border var(--transition);
 }
+
 
 .icon-button:hover {
-    background: #f0f2f5;
+    background: #f1f5f9;
+
+    border-color: var(--border);
+
+    color: var(--primary);
+
+    transform: translateY(-1px);
 }
 
-.delete-button {
-    color: #999;
+
+.icon-button:active {
+    transform: scale(0.94);
 }
+
+
+.delete-button:hover {
+    color: var(--danger);
+
+    background: #fff1f2;
+
+    border-color: #fecdd3;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
 
 .divider {
-    height: 32px;
     width: 1px;
-    background: #ddd;
+
+    height: 30px;
+
+    background: var(--border);
+
     margin: 0 5px;
 }
 
 
+/* =========================================================
+   SELECT
+========================================================= */
+
 select {
-    height: 38px;
+    height: 40px;
 
-    border: 1px solid #d5d9df;
-    background: white;
-    border-radius: 6px;
+    border: 1px solid var(--border);
 
-    padding: 0 30px 0 12px;
+    background: rgba(255, 255, 255, 0.9);
 
-    font-size: 14px;
-    color: #333;
+    border-radius: var(--radius-sm);
+
+    padding: 0 34px 0 13px;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    color: #334155;
 
     cursor: pointer;
+
     outline: none;
+
+    transition:
+        border var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
 }
 
 
-/* =========================
+select:hover {
+    border-color: var(--border-hover);
+
+    background: white;
+}
+
+
+select:focus {
+    border-color: #93b4ff;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================================================
    TOGGLE
-========================= */
+========================================================= */
 
 .toggle-container {
     display: flex;
+
     align-items: center;
 
     gap: 10px;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-right: 20px;
+    font-weight: 500;
+
+    color: #475569;
+
+    margin-right: 16px;
 
     cursor: pointer;
 }
+
 
 .toggle-container input {
     display: none;
 }
 
+
 .toggle {
-    width: 32px;
-    height: 18px;
+    width: 36px;
 
-    background: #b7bcc4;
+    height: 20px;
 
-    border-radius: 20px;
+    background: #cbd5e1;
+
+    border-radius: 999px;
 
     position: relative;
+
+    transition: background var(--transition);
 }
+
 
 .toggle::after {
     content: "";
 
     position: absolute;
 
-    width: 14px;
-    height: 14px;
+    width: 16px;
+
+    height: 16px;
 
     background: white;
 
     border-radius: 50%;
 
     top: 2px;
+
     left: 2px;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.2);
+
+    transition:
+        left var(--transition);
 }
+
 
 .toggle-container input:checked + .toggle {
-    background: #3d7cff;
+    background: var(--primary);
 }
+
 
 .toggle-container input:checked + .toggle::after {
-    left: 16px;
+    left: 18px;
 }
 
 
+/* =========================================================
+   FINISH BUTTON
+========================================================= */
+
 /* =========================
-   FINISH
+   PREMIUM FINISH BUTTON
 ========================= */
 
 .finish-button {
-    height: 64px;
+    height: 48px;
+    min-width: 150px;
 
-    min-width: 300px;
+    margin-right: 8px;
+
+    padding: 0 24px;
 
     border: none;
+    border-radius: 14px;
 
-    background: #0866f5;
+    background: linear-gradient(
+        135deg,
+        #1769ff,
+        #4f8cff
+    );
 
-    color: white;
+    color: #ffffff;
 
     font-size: 15px;
+    font-weight: 600;
 
-    font-weight: bold;
+    letter-spacing: 0.1px;
 
     cursor: pointer;
-}
-
-.finish-button:hover {
-    background: #0056dc;
-}
-
-
-/* =========================
-   WORKSPACE
-========================= */
-
-.workspace {
-    padding: 18px 16px 60px;
-}
-
-.workspace-top {
-    height: 42px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
+
+    box-shadow:
+        0 5px 14px rgba(23, 105, 255, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
+
+
+/* Arrow */
+
+.finish-button span {
+    font-size: 20px;
+
+    line-height: 1;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+/* Hover */
+
+.finish-button:hover {
+
+    background: linear-gradient(
+        135deg,
+        #0d5ce7,
+        #397cff
+    );
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(23, 105, 255, 0.28);
+}
+
+
+.finish-button:hover span {
+    transform: translateX(4px);
+}
+
+
+/* Click */
+
+.finish-button:active {
+
+    transform: translateY(0);
+
+    box-shadow:
+        0 3px 8px rgba(23, 105, 255, 0.20);
+}
+
+
+/* Focus */
+
+.finish-button:focus-visible {
+
+    outline: 3px solid rgba(23, 105, 255, 0.25);
+
+    outline-offset: 3px;
+}
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.workspace {
+    padding: 18px 20px 70px;
+
+    max-width: 1600px;
+
+    margin: auto;
+}
+
+
+.workspace-top {
+    min-height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 4px;
+}
+
+
+/* =========================================================
+   SELECT ALL
+========================================================= */
 
 .select-all {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
 
     font-size: 14px;
-}
 
-.select-all input {
-    width: 20px;
-    height: 20px;
-}
+    font-weight: 500;
 
-
-/* =========================
-   VIEW CONTROLS
-========================= */
-
-.view-controls {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.sort-button {
-    height: 38px;
-
-    border: 1px solid #d7dce3;
-    background: white;
-
-    border-radius: 7px;
-
-    padding: 0 12px;
+    color: #475569;
 
     cursor: pointer;
 }
 
-.view-button {
-    width: 40px;
-    height: 38px;
 
-    border: none;
-    background: transparent;
+.select-all input {
+    appearance: none;
 
-    font-size: 21px;
-    color: #777;
+    width: 20px;
+
+    height: 20px;
+
+    border: 1px solid #cbd5e1;
 
     border-radius: 6px;
 
+    background: white;
+
     cursor: pointer;
+
+    position: relative;
+
+    transition:
+        background var(--transition),
+        border var(--transition);
 }
+
+
+.select-all input:hover {
+    border-color: #94a3b8;
+}
+
+
+.select-all input:checked {
+    background: var(--primary);
+
+    border-color: var(--primary);
+}
+
+
+.select-all input:checked::after {
+    content: "✓";
+
+    position: absolute;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    left: 4px;
+
+    top: 0px;
+}
+
+
+/* =========================================================
+   VIEW CONTROLS
+========================================================= */
+
+.view-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.sort-button {
+    height: 40px;
+
+    border: 1px solid var(--border);
+
+    background: rgba(255, 255, 255, 0.9);
+
+    border-radius: 10px;
+
+    padding: 0 13px;
+
+    color: #475569;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        border var(--transition),
+        box-shadow var(--transition);
+}
+
+
+.sort-button:hover {
+    background: white;
+
+    border-color: var(--border-hover);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.view-button {
+    width: 40px;
+
+    height: 40px;
+
+    border: 1px solid transparent;
+
+    background: transparent;
+
+    color: #64748b;
+
+    border-radius: 10px;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        color var(--transition),
+        border var(--transition);
+}
+
 
 .view-button:hover {
-    background: #e3ecff;
+    background: white;
+
+    border-color: var(--border);
+
+    color: var(--primary);
 }
+
 
 .view-button.active {
-    background: #dce9ff;
-    color: #1769ff;
+    background: var(--primary-soft);
+
+    border-color: #c8d9ff;
+
+    color: var(--primary);
 }
 
 
-/* =====================================================
-   GRID VIEW
-===================================================== */
+/* =========================================================
+   IMAGE GRID
+========================================================= */
 
 .image-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(auto-fill, minmax(170px, 1fr));
+        repeat(auto-fill, minmax(180px, 1fr));
 
-    gap: 38px 34px;
+    gap: 42px 38px;
 
     align-items: start;
 
-    padding: 20px 12px;
+    padding: 24px 12px;
 }
+
+
+/* =========================================================
+   IMAGE CARD
+========================================================= */
 
 .image-card {
     position: relative;
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
 
     cursor: grab;
 
     user-select: none;
+
+    transition:
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+
+.image-card:hover {
+    transform: translateY(-4px);
+}
+
+
+.image-card:active {
+    cursor: grabbing;
+}
+
 
 .image-card.dragging {
-    opacity: 0.35;
+    opacity: 0.4;
+
+    transform: scale(0.96);
 }
 
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
 .image-wrapper {
-    width: 158px;
-    height: 215px;
+    width: 165px;
+
+    height: 220px;
 
     background: white;
 
-    border: 1px solid #dce0e6;
+    border: 1px solid #e2e8f0;
+
+    border-radius: 12px;
 
     box-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.08);
+        0 4px 14px rgba(15, 23, 42, 0.07);
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     overflow: hidden;
 
     position: relative;
+
+    transition:
+        box-shadow var(--transition),
+        border var(--transition);
 }
+
+
+.image-card:hover .image-wrapper {
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 12px 28px rgba(15, 23, 42, 0.12);
+}
+
 
 .image-wrapper img {
     width: 100%;
+
     height: 100%;
 
     object-fit: contain;
+
+    transition:
+        transform 0.3s ease;
 }
+
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
 
 .card-checkbox {
     position: absolute;
 
-    top: -7px;
-    left: -7px;
+    top: -8px;
+
+    left: -8px;
+
+    appearance: none;
 
     width: 23px;
+
     height: 23px;
 
     background: white;
 
-    border: 1px solid #ccd2da;
+    border: 1px solid #cbd5e1;
 
-    border-radius: 5px;
+    border-radius: 7px;
+
+    box-shadow:
+        0 2px 7px rgba(15, 23, 42, 0.12);
+
+    cursor: pointer;
 
     z-index: 5;
+
+    transition:
+        background var(--transition),
+        border var(--transition);
 }
 
+
+.card-checkbox:checked {
+    background: var(--primary);
+
+    border-color: var(--primary);
+}
+
+
+.card-checkbox:checked::after {
+    content: "✓";
+
+    position: absolute;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    left: 4px;
+
+    top: 0;
+}
+
+
+/* =========================================================
+   FILE NAME
+========================================================= */
+
 .file-name {
-    margin-top: 8px;
+    margin-top: 10px;
 
-    background: #dbe9ff;
-    color: #1769d1;
+    background: #eaf1ff;
 
-    padding: 4px 9px;
+    color: #2563eb;
 
-    border-radius: 5px;
+    border: 1px solid #d7e5ff;
+
+    padding: 5px 10px;
+
+    border-radius: 7px;
 
     font-size: 12px;
 
-    max-width: 150px;
+    font-weight: 600;
+
+    max-width: 155px;
 
     overflow: hidden;
 
@@ -353,22 +814,26 @@ select {
 }
 
 
-/* Grid remove button */
+/* =========================================================
+   REMOVE
+========================================================= */
 
 .remove-button {
     position: absolute;
 
-    top: -12px;
-    right: -12px;
+    top: -13px;
 
-    width: 28px;
-    height: 28px;
+    right: -13px;
+
+    width: 30px;
+
+    height: 30px;
 
     border-radius: 50%;
 
-    border: none;
+    border: 3px solid var(--bg);
 
-    background: #ef4444;
+    background: var(--danger);
 
     color: white;
 
@@ -379,41 +844,194 @@ select {
     display: none;
 
     z-index: 10;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-shadow:
+        0 4px 10px rgba(239, 68, 68, 0.3);
+
+    transition:
+        transform var(--transition);
 }
+
 
 .image-card:hover .remove-button {
     display: flex;
-
-    align-items: center;
-    justify-content: center;
 }
 
 
-/* =====================================================
+.remove-button:hover {
+    transform: scale(1.12);
+}
+
+
+/* =========================================================
+   PLUS BUTTON
+========================================================= */
+
+.add-between {
+    position: absolute;
+
+    right: -32px;
+
+    top: 98px;
+
+    width: 27px;
+
+    height: 27px;
+
+    border-radius: 50%;
+
+    border: 3px solid var(--bg);
+
+    background: #8db5ff;
+
+    color: white;
+
+    font-size: 19px;
+
+    line-height: 20px;
+
+    cursor: pointer;
+
+    z-index: 5;
+
+    box-shadow:
+        0 4px 10px rgba(59, 130, 246, 0.2);
+
+    transition:
+        transform var(--transition),
+        background var(--transition);
+}
+
+
+.add-between:hover {
+    background: var(--primary);
+
+    transform: scale(1.15);
+}
+
+
+/* =========================================================
+   EMPTY CARD
+========================================================= */
+
+.empty-card {
+    width: 190px;
+
+    height: 240px;
+
+    border: 1.5px dashed #9dbbf5;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.5);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #4f83df;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        border var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+
+.empty-card:hover {
+    background: white;
+
+    border-color: #5d91ef;
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+.empty-plus {
+    width: 30px;
+
+    height: 30px;
+
+    border-radius: 50%;
+
+    border: 1px solid #8db2f5;
+
+    background: #edf4ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+    margin-bottom: 14px;
+
+    transition:
+        background var(--transition),
+        transform var(--transition);
+}
+
+
+.empty-card:hover .empty-plus {
+    background: #dbe9ff;
+
+    transform: scale(1.1);
+}
+
+
+.empty-card strong {
+    font-size: 14px;
+
+    color: #3474df;
+}
+
+
+/* =========================================================
    LIST VIEW
-===================================================== */
+========================================================= */
 
 .image-grid.list-view {
     display: flex;
 
     flex-direction: column;
 
-    gap: 0;
+    gap: 10px;
 
-    padding: 20px 30px;
+    padding: 20px 12px;
 }
 
-
-/* List row */
 
 .image-grid.list-view .image-card {
     width: 100%;
 
-    height: 130px;
+    min-height: 122px;
 
-    background: #ffffff;
+    background:
+        rgba(255, 255, 255, 0.92);
 
-    border-bottom: 1px solid #e1e6ed;
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
 
     display: flex;
 
@@ -421,85 +1039,108 @@ select {
 
     align-items: center;
 
-    padding: 15px 25px;
+    padding: 13px 20px;
+
+    box-shadow: var(--shadow-sm);
 
     cursor: grab;
 
-    position: relative;
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border var(--transition);
 }
 
 
-/* Drag handle */
+.image-grid.list-view .image-card:hover {
+    transform: translateX(3px);
+
+    border-color: #d3ddeb;
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   DRAG HANDLE
+========================================================= */
 
 .image-grid.list-view .image-card::before {
-    content: "⋮⋮";
+    content: "⠿";
 
-    width: 35px;
+    width: 30px;
 
-    font-size: 20px;
+    font-size: 25px;
 
-    letter-spacing: 2px;
-
-    color: #555;
+    color: #94a3b8;
 
     text-align: center;
 
-    margin-right: 20px;
+    margin-right: 14px;
 
     cursor: grab;
 }
 
 
-/* List thumbnail */
-
-.image-grid.list-view .image-wrapper {
-    width: 70px;
-
-    height: 96px;
-
-    flex-shrink: 0;
-
-    box-shadow: none;
-
-    border: 1px solid #ddd;
-}
-
-
-/* List checkbox */
+/* =========================================================
+   LIST CHECKBOX
+========================================================= */
 
 .image-grid.list-view .card-checkbox {
     position: relative;
 
     top: auto;
+
     left: auto;
 
-    margin-right: 30px;
-
-    width: 20px;
-    height: 20px;
-
     flex-shrink: 0;
+
+    margin-right: 20px;
 
     order: -1;
 }
 
 
-/* Filename */
+/* =========================================================
+   LIST IMAGE
+========================================================= */
 
-.image-grid.list-view .file-name {
-    margin: 0;
+.image-grid.list-view .image-wrapper {
+    width: 72px;
 
-    margin-left: 25px;
+    height: 94px;
 
-    background: #dbe9ff;
+    flex-shrink: 0;
 
-    padding: 5px 10px;
+    border-radius: 8px;
 
-    max-width: 300px;
+    box-shadow: none;
 }
 
 
-/* List action buttons */
+.image-grid.list-view .image-card:hover .image-wrapper {
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   LIST FILENAME
+========================================================= */
+
+.image-grid.list-view .file-name {
+    margin: 0 0 0 24px;
+
+    background: #eef4ff;
+
+    border-color: #dce8ff;
+
+    max-width: 320px;
+}
+
+
+/* =========================================================
+   LIST ACTIONS
+========================================================= */
 
 .list-actions {
     margin-left: auto;
@@ -508,192 +1149,400 @@ select {
 
     align-items: center;
 
-    gap: 22px;
+    gap: 7px;
 }
 
-.list-action {
-    width: 30px;
-    height: 30px;
 
-    border: none;
+.list-action {
+    width: 38px;
+
+    height: 38px;
+
+    border: 1px solid transparent;
 
     background: transparent;
 
-    color: #555;
+    color: #64748b;
 
-    font-size: 19px;
-
-    cursor: pointer;
-
-    border-radius: 5px;
-}
-
-.list-action:hover {
-    background: #edf1f5;
-}
-
-.list-action.delete {
-    color: #555;
-}
-
-
-/* Hide grid remove button in list */
-
-.image-grid.list-view .remove-button {
-    display: none;
-}
-
-
-/* Hide plus buttons in list */
-
-.image-grid.list-view .add-between {
-    display: none;
-}
-
-
-/* =====================================================
-   ADD BETWEEN
-===================================================== */
-
-.add-between {
-    position: absolute;
-
-    right: -32px;
-    top: 95px;
-
-    width: 25px;
-    height: 25px;
-
-    border-radius: 50%;
-
-    border: none;
-
-    background: #8eb5ff;
-
-    color: white;
-
-    font-size: 20px;
-
-    cursor: pointer;
-}
-
-.image-grid.list-view .add-between {
-    display: none;
-}
-
-
-/* =====================================================
-   EMPTY CARD
-===================================================== */
-
-.empty-card {
-    width: 190px;
-    height: 240px;
-
-    border: 1px dashed #6f9cff;
-
-    background: rgba(255, 255, 255, 0.25);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    color: #5187f5;
-
-    font-size: 14px;
-
-    cursor: pointer;
-}
-
-.empty-plus {
-    width: 22px;
-    height: 22px;
-
-    border-radius: 50%;
-
-    border: 1px solid #6697ff;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
+    border-radius: 9px;
 
     font-size: 18px;
 
-    margin-bottom: 14px;
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        background var(--transition),
+        color var(--transition),
+        border var(--transition),
+        transform var(--transition);
 }
 
 
-/* Empty card in list */
+.list-action:hover {
+    background: #f1f5f9;
+
+    border-color: var(--border);
+
+    color: var(--primary);
+
+    transform: translateY(-1px);
+}
+
+
+.list-action.delete:hover {
+    background: #fff1f2;
+
+    border-color: #fecdd3;
+
+    color: var(--danger);
+}
+
+
+/* Hide grid controls in list */
+
+.image-grid.list-view .remove-button,
+.image-grid.list-view .add-between {
+    display: none;
+}
+
+
+/* =========================================================
+   LIST EMPTY CARD
+========================================================= */
 
 .image-grid.list-view .empty-card {
     align-self: center;
+
+    margin-top: 20px;
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* =========================================================
+   SCROLLBAR
+========================================================= */
 
-@media (max-width: 800px) {
+::-webkit-scrollbar {
+    width: 9px;
 
-    .finish-button {
-        min-width: 160px;
+    height: 9px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 999px;
+
+    border: 2px solid var(--bg);
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .toolbar-left {
+        gap: 3px;
+    }
+
+    .toolbar-left select {
+        max-width: 130px;
     }
 
     .toggle-container {
         display: none;
     }
 
-    select {
-        padding: 0 8px;
+    .finish-button {
+        min-width: 190px;
     }
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
     .toolbar {
         overflow-x: auto;
+
+        justify-content: flex-start;
+    }
+
+    .toolbar-right {
+        margin-left: auto;
+    }
+
+    .finish-button {
+        min-width: 150px;
+    }
+
+    .workspace {
+        padding-left: 10px;
+
+        padding-right: 10px;
     }
 
     .image-grid {
         grid-template-columns:
             repeat(2, minmax(130px, 1fr));
 
-        gap: 25px 15px;
+        gap: 30px 20px;
     }
 
     .image-grid.list-view {
-        padding: 10px;
+        padding: 12px 0;
     }
 
     .image-grid.list-view .image-card {
-        padding: 12px;
+        padding: 10px;
 
-        height: 110px;
+        min-height: 105px;
     }
 
     .image-grid.list-view .image-card::before {
-        margin-right: 8px;
+        margin-right: 5px;
     }
 
     .image-grid.list-view .card-checkbox {
-        margin-right: 10px;
+        margin-right: 8px;
     }
 
     .image-grid.list-view .file-name {
         margin-left: 12px;
 
-        max-width: 130px;
+        max-width: 150px;
     }
 
     .list-actions {
-        gap: 5px;
+        gap: 2px;
     }
+
+    .list-action {
+        width: 32px;
+
+        height: 32px;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .toolbar-left select {
+        display: none;
+    }
+
+    .finish-button {
+        min-width: 125px;
+
+        padding: 0 15px;
+    }
+
+    .image-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .image-wrapper {
+        width: 140px;
+
+        height: 190px;
+    }
+
+    .image-grid.list-view .image-wrapper {
+        width: 55px;
+
+        height: 75px;
+    }
+
+    .image-grid.list-view .file-name {
+        max-width: 110px;
+
+        font-size: 11px;
+    }
+}
+/* =========================
+   SMOOTH UI CURVES
+========================= */
+
+.toolbar {
+    border-radius: 0 0 14px 14px;
+
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+
+select {
+    border-radius: 10px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+select:focus {
+
+    border-color: #7ba5ff;
+
+    box-shadow:
+        0 0 0 3px rgba(23, 105, 255, 0.10);
+}
+
+
+.icon-button {
+    border-radius: 10px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+.icon-button:hover {
+
+    background: #f1f5ff;
+
+    transform: translateY(-1px);
+}
+
+
+.sort-button {
+
+    border-radius: 10px;
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.sort-button:hover {
+
+    background: white;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+
+.view-button {
+
+    border-radius: 10px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+.view-button:hover {
+
+    transform: translateY(-1px);
+}
+
+
+/* Image cards */
+
+.image-wrapper {
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.image-card:hover .image-wrapper {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.10);
+}
+
+
+/* List rows */
+
+.image-grid.list-view .image-card {
+
+    border-radius: 12px;
+
+    margin-bottom: 8px;
+
+    border: 1px solid #e2e7ef;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.03);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.image-grid.list-view .image-card:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.07);
+}
+
+
+/* File labels */
+
+.file-name {
+
+    border-radius: 7px;
+
+    transition:
+        transform 0.15s ease;
+}
+
+
+.image-card:hover .file-name {
+
+    transform: translateY(-1px);
+}
+
+
+/* Add image card */
+
+.empty-card {
+
+    border-radius: 14px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.empty-card:hover {
+
+    background: rgba(255, 255, 255, 0.75);
+
+    border-color: #4f8cff;
+
+    transform: translateY(-3px);
 }

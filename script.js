@@ -1,50 +1,42 @@
 const imageInput = document.getElementById("imageInput");
-
 const addButton = document.getElementById("addButton");
-
 const emptyCard = document.getElementById("emptyCard");
-
 const imageGrid = document.getElementById("imageGrid");
-
 const selectAll = document.getElementById("selectAll");
-
 const deleteButton = document.getElementById("deleteButton");
-
 const sortButton = document.getElementById("sortButton");
-
 const finishButton = document.getElementById("finishButton");
 
-const gridViewButton =
-    document.querySelectorAll(".view-button")[1];
+const pageSize = document.getElementById("pageSize");
+const orientation = document.getElementById("orientation");
+const margins = document.getElementById("margins");
+const separatePdfs = document.getElementById("separatePdfs");
 
-const listViewButton =
-    document.querySelectorAll(".view-button")[0];
+const viewButtons = document.querySelectorAll(".view-button");
 
+const gridViewButton = viewButtons[1];
+const listViewButton = viewButtons[0];
 
 let images = [];
-
 let selectedIndexes = new Set();
 
 let draggedIndex = null;
-
 let currentView = "grid";
+
+let isGenerating = false;
 
 
 /* =====================================================
-   FILE PICKER
+   OPEN FILE PICKER
 ===================================================== */
 
 addButton.addEventListener("click", () => {
-
     imageInput.click();
-
 });
 
 
 emptyCard.addEventListener("click", () => {
-
     imageInput.click();
-
 });
 
 
@@ -58,16 +50,13 @@ imageInput.addEventListener("change", (event) => {
 
     files.forEach(file => {
 
-        if (!file.type.match(/^image\/(jpeg|png|jpg)$/)) {
+        if (!file.type.match(/^image\/(jpeg|png|jpg)$/i)) {
             return;
         }
 
         images.push({
-
             file: file,
-
             url: URL.createObjectURL(file)
-
         });
 
     });
@@ -75,7 +64,6 @@ imageInput.addEventListener("change", (event) => {
     imageInput.value = "";
 
     renderImages();
-
 });
 
 
@@ -98,7 +86,6 @@ function renderImages() {
         imageGrid.appendChild(emptyCard);
 
         return;
-
     }
 
 
@@ -113,18 +100,14 @@ function renderImages() {
         card.dataset.index = index;
 
 
-        /* =========================
-           IMAGE
-        ========================= */
+        /* IMAGE */
 
-        const wrapper =
-            document.createElement("div");
+        const wrapper = document.createElement("div");
 
         wrapper.className = "image-wrapper";
 
 
-        const img =
-            document.createElement("img");
+        const img = document.createElement("img");
 
         img.src = image.url;
 
@@ -134,12 +117,9 @@ function renderImages() {
         wrapper.appendChild(img);
 
 
-        /* =========================
-           CHECKBOX
-        ========================= */
+        /* CHECKBOX */
 
-        const checkbox =
-            document.createElement("input");
+        const checkbox = document.createElement("input");
 
         checkbox.type = "checkbox";
 
@@ -152,7 +132,6 @@ function renderImages() {
         checkbox.addEventListener("click", event => {
 
             event.stopPropagation();
-
 
             if (checkbox.checked) {
 
@@ -167,12 +146,9 @@ function renderImages() {
         });
 
 
-        /* =========================
-           FILE NAME
-        ========================= */
+        /* FILENAME */
 
-        const filename =
-            document.createElement("div");
+        const filename = document.createElement("div");
 
         filename.className = "file-name";
 
@@ -180,16 +156,15 @@ function renderImages() {
             `page-${String(index + 1).padStart(3, "0")}.jpg`;
 
 
-        /* =========================
-           GRID DELETE
-        ========================= */
+        /* DELETE */
 
-        const remove =
-            document.createElement("button");
+        const remove = document.createElement("button");
 
         remove.className = "remove-button";
 
         remove.textContent = "×";
+
+        remove.title = "Delete";
 
 
         remove.addEventListener("click", event => {
@@ -201,16 +176,15 @@ function renderImages() {
         });
 
 
-        /* =========================
-           ADD BETWEEN
-        ========================= */
+        /* ADD BETWEEN */
 
-        const addBetween =
-            document.createElement("button");
+        const addBetween = document.createElement("button");
 
         addBetween.className = "add-between";
 
         addBetween.textContent = "+";
+
+        addBetween.title = "Add image";
 
 
         addBetween.addEventListener("click", event => {
@@ -222,20 +196,14 @@ function renderImages() {
         });
 
 
-        /* =========================
-           LIST ACTIONS
-        ========================= */
+        /* LIST ACTIONS */
 
-        const actions =
-            document.createElement("div");
+        const actions = document.createElement("div");
 
         actions.className = "list-actions";
 
 
-        /* Duplicate */
-
-        const duplicate =
-            document.createElement("button");
+        const duplicate = document.createElement("button");
 
         duplicate.className = "list-action";
 
@@ -253,16 +221,13 @@ function renderImages() {
         });
 
 
-        /* Rotate */
-
-        const rotate =
-            document.createElement("button");
+        const rotate = document.createElement("button");
 
         rotate.className = "list-action";
 
         rotate.innerHTML = "↻";
 
-        rotate.title = "Rotate";
+        rotate.title = "Rotate preview";
 
 
         rotate.addEventListener("click", event => {
@@ -274,15 +239,11 @@ function renderImages() {
         });
 
 
-        /* Delete */
+        const listDelete = document.createElement("button");
 
-        const listDelete =
-            document.createElement("button");
+        listDelete.className = "list-action delete";
 
-        listDelete.className =
-            "list-action delete";
-
-        listDelete.innerHTML = "♜";
+        listDelete.innerHTML = "🗑";
 
         listDelete.title = "Delete";
 
@@ -303,9 +264,7 @@ function renderImages() {
         actions.appendChild(listDelete);
 
 
-        /* =========================
-           BUILD CARD
-        ========================= */
+        /* BUILD CARD */
 
         card.appendChild(wrapper);
 
@@ -320,9 +279,7 @@ function renderImages() {
         card.appendChild(actions);
 
 
-        /* =========================
-           DRAGGING
-        ========================= */
+        /* DRAG */
 
         card.addEventListener("dragstart", () => {
 
@@ -362,11 +319,11 @@ function renderImages() {
             }
 
 
-            const moved =
+            const movedImage =
                 images.splice(draggedIndex, 1)[0];
 
 
-            images.splice(index, 0, moved);
+            images.splice(index, 0, movedImage);
 
 
             selectedIndexes.clear();
@@ -381,12 +338,9 @@ function renderImages() {
     });
 
 
-    /* =========================
-       ADD IMAGE CARD
-    ========================= */
+    /* ADD IMAGE CARD */
 
-    const addCard =
-        document.createElement("div");
+    const addCard = document.createElement("div");
 
     addCard.className = "empty-card";
 
@@ -402,22 +356,25 @@ function renderImages() {
 
 
     addCard.addEventListener("click", () => {
-
         imageInput.click();
-
     });
 
 
     imageGrid.appendChild(addCard);
-
 }
 
 
 /* =====================================================
-   REMOVE
+   REMOVE IMAGE
 ===================================================== */
 
 function removeImage(index) {
+
+    if (images[index]) {
+
+        URL.revokeObjectURL(images[index].url);
+
+    }
 
     images.splice(index, 1);
 
@@ -426,12 +383,11 @@ function removeImage(index) {
     selectAll.checked = false;
 
     renderImages();
-
 }
 
 
 /* =====================================================
-   DUPLICATE
+   DUPLICATE IMAGE
 ===================================================== */
 
 function duplicateImage(index) {
@@ -448,38 +404,43 @@ function duplicateImage(index) {
 
 
     renderImages();
-
 }
 
 
 /* =====================================================
-   ROTATE
+   ROTATE PREVIEW
 ===================================================== */
 
 function rotateImage(index) {
 
-    const img =
-        document.querySelectorAll(
-            ".image-wrapper img"
-        )[index];
+    const card =
+        imageGrid.querySelectorAll(".image-card")[index];
 
+    if (!card) {
+        return;
+    }
+
+
+    const img =
+        card.querySelector(".image-wrapper img");
 
     if (!img) {
         return;
     }
 
 
-    const current =
+    const currentRotation =
         parseInt(img.dataset.rotation || "0");
 
 
-    const next = current + 90;
+    const newRotation =
+        currentRotation + 90;
 
-    img.dataset.rotation = next;
+
+    img.dataset.rotation = newRotation;
 
     img.style.transform =
-        `rotate(${next}deg)`;
-
+        `rotate(${newRotation}deg)`;
 }
 
 
@@ -504,7 +465,6 @@ selectAll.addEventListener("change", () => {
 
 
     renderImages();
-
 });
 
 
@@ -531,7 +491,6 @@ deleteButton.addEventListener("click", () => {
     selectAll.checked = false;
 
     renderImages();
-
 });
 
 
@@ -558,7 +517,6 @@ sortButton.addEventListener("click", () => {
     selectedIndexes.clear();
 
     renderImages();
-
 });
 
 
@@ -575,7 +533,6 @@ gridViewButton.addEventListener("click", () => {
     listViewButton.classList.remove("active");
 
     renderImages();
-
 });
 
 
@@ -592,28 +549,369 @@ listViewButton.addEventListener("click", () => {
     gridViewButton.classList.remove("active");
 
     renderImages();
-
 });
 
 
 /* =====================================================
-   FINISH
+   GET PAGE SIZE
 ===================================================== */
 
-finishButton.addEventListener("click", () => {
+function getPageSize() {
+
+    const size = pageSize.value;
+
+    if (size === "letter") {
+
+        return [215.9, 279.4];
+
+    }
+
+    if (size === "a3") {
+
+        return [297, 420];
+
+    }
+
+    // A4
+
+    return [210, 297];
+}
+
+
+/* =====================================================
+   GET MARGIN
+===================================================== */
+
+function getMargin() {
+
+    if (margins.value === "none") {
+
+        return 0;
+
+    }
+
+    if (margins.value === "large") {
+
+        return 20;
+
+    }
+
+    // Small
+
+    return 8;
+}
+
+
+/* =====================================================
+   LOAD IMAGE
+===================================================== */
+
+function loadImage(file) {
+
+    return new Promise((resolve, reject) => {
+
+        const reader = new FileReader();
+
+
+        reader.onload = () => {
+
+            const img = new Image();
+
+
+            img.onload = () => {
+
+                resolve({
+                    element: img,
+                    data: reader.result
+                });
+
+            };
+
+
+            img.onerror = () => {
+
+                reject(
+                    new Error("Could not load image.")
+                );
+
+            };
+
+
+            img.src = reader.result;
+
+        };
+
+
+        reader.onerror = () => {
+
+            reject(
+                new Error("Could not read image.")
+            );
+
+        };
+
+
+        reader.readAsDataURL(file);
+
+    });
+}
+
+
+/* =====================================================
+   GENERATE ONE PDF
+===================================================== */
+
+async function createPdf(imagesToUse, filename) {
+
+    const jsPDF = window.jspdf?.jsPDF;
+
+
+    if (!jsPDF) {
+
+        throw new Error(
+            "PDF library could not be loaded."
+        );
+
+    }
+
+
+    const baseSize = getPageSize();
+
+    const margin = getMargin();
+
+    const selectedOrientation =
+        orientation.value;
+
+
+    let pdf;
+
+
+    if (selectedOrientation === "portrait") {
+
+        pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: baseSize
+        });
+
+    } else if (selectedOrientation === "landscape") {
+
+        pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: baseSize
+        });
+
+    } else {
+
+        // Auto starts with portrait.
+        // Each image will still be fitted correctly.
+
+        pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: baseSize
+        });
+
+    }
+
+
+    for (let i = 0; i < imagesToUse.length; i++) {
+
+        const image = await loadImage(
+            imagesToUse[i].file
+        );
+
+
+        if (i > 0) {
+
+            pdf.addPage();
+
+        }
+
+
+        let pageWidth =
+            pdf.internal.pageSize.getWidth();
+
+        let pageHeight =
+            pdf.internal.pageSize.getHeight();
+
+
+        const availableWidth =
+            pageWidth - margin * 2;
+
+        const availableHeight =
+            pageHeight - margin * 2;
+
+
+        const imageWidth =
+            image.element.naturalWidth;
+
+        const imageHeight =
+            image.element.naturalHeight;
+
+
+        const imageRatio =
+            imageWidth / imageHeight;
+
+
+        let drawWidth =
+            availableWidth;
+
+        let drawHeight =
+            drawWidth / imageRatio;
+
+
+        if (drawHeight > availableHeight) {
+
+            drawHeight =
+                availableHeight;
+
+            drawWidth =
+                drawHeight * imageRatio;
+
+        }
+
+
+        const x =
+            (pageWidth - drawWidth) / 2;
+
+
+        const y =
+            (pageHeight - drawHeight) / 2;
+
+
+        let imageFormat = "JPEG";
+
+
+        if (
+            imagesToUse[i].file.type ===
+            "image/png"
+        ) {
+
+            imageFormat = "PNG";
+
+        }
+
+
+        pdf.addImage(
+            image.data,
+            imageFormat,
+            x,
+            y,
+            drawWidth,
+            drawHeight
+        );
+
+    }
+
+
+    pdf.save(filename);
+}
+
+
+/* =====================================================
+   FINISH / GENERATE PDF
+===================================================== */
+
+finishButton.addEventListener("click", async () => {
 
     if (images.length === 0) {
 
-        alert("Please add images first.");
+        alert("Please add at least one image first.");
+
+        return;
+    }
+
+
+    if (isGenerating) {
 
         return;
 
     }
 
 
-    alert(
-        "Images are ready. PDF generation is next!"
-    );
+    isGenerating = true;
+
+
+    const originalText =
+        finishButton.innerHTML;
+
+
+    finishButton.disabled = true;
+
+    finishButton.innerHTML =
+        "Creating PDF...";
+
+
+    try {
+
+        /*
+         * IMPORTANT:
+         * `images` is already in the exact order
+         * shown on the screen.
+         */
+
+        if (separatePdfs.checked) {
+
+            for (let i = 0; i < images.length; i++) {
+
+                const filename =
+                    `page-${String(i + 1).padStart(3, "0")}.pdf`;
+
+
+                await createPdf(
+                    [images[i]],
+                    filename
+                );
+
+            }
+
+        } else {
+
+            await createPdf(
+                images,
+                "images-to-pdf.pdf"
+            );
+
+        }
+
+
+        finishButton.innerHTML =
+            "PDF Ready ✓";
+
+
+        setTimeout(() => {
+
+            finishButton.innerHTML =
+                originalText;
+
+        }, 2000);
+
+
+    } catch (error) {
+
+        console.error(
+            "PDF generation error:",
+            error
+        );
+
+
+        alert(
+            "PDF could not be generated.\n\n" +
+            error.message
+        );
+
+
+        finishButton.innerHTML =
+            originalText;
+
+    }
+
+
+    finishButton.disabled = false;
+
+    isGenerating = false;
 
 });
 
