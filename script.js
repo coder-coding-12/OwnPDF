@@ -14,30 +14,43 @@ const sortButton = document.getElementById("sortButton");
 
 const finishButton = document.getElementById("finishButton");
 
+const gridViewButton =
+    document.querySelectorAll(".view-button")[1];
+
+const listViewButton =
+    document.querySelectorAll(".view-button")[0];
+
+
 let images = [];
 
 let selectedIndexes = new Set();
 
 let draggedIndex = null;
 
+let currentView = "grid";
 
-/* =========================
-   OPEN FILE PICKER
-========================= */
+
+/* =====================================================
+   FILE PICKER
+===================================================== */
 
 addButton.addEventListener("click", () => {
+
     imageInput.click();
+
 });
 
 
 emptyCard.addEventListener("click", () => {
+
     imageInput.click();
+
 });
 
 
-/* =========================
+/* =====================================================
    ADD IMAGES
-========================= */
+===================================================== */
 
 imageInput.addEventListener("change", (event) => {
 
@@ -50,8 +63,11 @@ imageInput.addEventListener("change", (event) => {
         }
 
         images.push({
+
             file: file,
+
             url: URL.createObjectURL(file)
+
         });
 
     });
@@ -63,19 +79,26 @@ imageInput.addEventListener("change", (event) => {
 });
 
 
-/* =========================
-   RENDER
-========================= */
+/* =====================================================
+   RENDER IMAGES
+===================================================== */
 
 function renderImages() {
 
     imageGrid.innerHTML = "";
+
+    imageGrid.classList.toggle(
+        "list-view",
+        currentView === "list"
+    );
+
 
     if (images.length === 0) {
 
         imageGrid.appendChild(emptyCard);
 
         return;
+
     }
 
 
@@ -90,73 +113,66 @@ function renderImages() {
         card.dataset.index = index;
 
 
-        /* Image wrapper */
+        /* =========================
+           IMAGE
+        ========================= */
 
-        const wrapper = document.createElement("div");
+        const wrapper =
+            document.createElement("div");
 
         wrapper.className = "image-wrapper";
 
 
-        const img = document.createElement("img");
+        const img =
+            document.createElement("img");
 
         img.src = image.url;
 
         img.alt = `Page ${index + 1}`;
 
+
         wrapper.appendChild(img);
 
 
-        /* Checkbox */
+        /* =========================
+           CHECKBOX
+        ========================= */
 
-        const checkbox = document.createElement("input");
+        const checkbox =
+            document.createElement("input");
 
         checkbox.type = "checkbox";
 
         checkbox.className = "card-checkbox";
 
-        checkbox.checked = selectedIndexes.has(index);
+        checkbox.checked =
+            selectedIndexes.has(index);
 
 
         checkbox.addEventListener("click", event => {
 
             event.stopPropagation();
 
+
             if (checkbox.checked) {
+
                 selectedIndexes.add(index);
+
             } else {
+
                 selectedIndexes.delete(index);
+
             }
 
         });
 
 
-        /* Remove */
+        /* =========================
+           FILE NAME
+        ========================= */
 
-        const remove = document.createElement("button");
-
-        remove.className = "remove-button";
-
-        remove.textContent = "×";
-
-        remove.title = "Remove image";
-
-
-        remove.addEventListener("click", event => {
-
-            event.stopPropagation();
-
-            images.splice(index, 1);
-
-            selectedIndexes.clear();
-
-            renderImages();
-
-        });
-
-
-        /* Filename */
-
-        const filename = document.createElement("div");
+        const filename =
+            document.createElement("div");
 
         filename.className = "file-name";
 
@@ -164,41 +180,148 @@ function renderImages() {
             `page-${String(index + 1).padStart(3, "0")}.jpg`;
 
 
-        /* Plus button */
+        /* =========================
+           GRID DELETE
+        ========================= */
 
-        const addBetween = document.createElement("button");
+        const remove =
+            document.createElement("button");
+
+        remove.className = "remove-button";
+
+        remove.textContent = "×";
+
+
+        remove.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            removeImage(index);
+
+        });
+
+
+        /* =========================
+           ADD BETWEEN
+        ========================= */
+
+        const addBetween =
+            document.createElement("button");
 
         addBetween.className = "add-between";
 
         addBetween.textContent = "+";
-
-        addBetween.title = "Add image here";
 
 
         addBetween.addEventListener("click", event => {
 
             event.stopPropagation();
 
-            imageInput.dataset.insertIndex = index + 1;
-
             imageInput.click();
 
         });
 
 
+        /* =========================
+           LIST ACTIONS
+        ========================= */
+
+        const actions =
+            document.createElement("div");
+
+        actions.className = "list-actions";
+
+
+        /* Duplicate */
+
+        const duplicate =
+            document.createElement("button");
+
+        duplicate.className = "list-action";
+
+        duplicate.innerHTML = "▣";
+
+        duplicate.title = "Duplicate";
+
+
+        duplicate.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            duplicateImage(index);
+
+        });
+
+
+        /* Rotate */
+
+        const rotate =
+            document.createElement("button");
+
+        rotate.className = "list-action";
+
+        rotate.innerHTML = "↻";
+
+        rotate.title = "Rotate";
+
+
+        rotate.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            rotateImage(index);
+
+        });
+
+
+        /* Delete */
+
+        const listDelete =
+            document.createElement("button");
+
+        listDelete.className =
+            "list-action delete";
+
+        listDelete.innerHTML = "♜";
+
+        listDelete.title = "Delete";
+
+
+        listDelete.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+            removeImage(index);
+
+        });
+
+
+        actions.appendChild(duplicate);
+
+        actions.appendChild(rotate);
+
+        actions.appendChild(listDelete);
+
+
+        /* =========================
+           BUILD CARD
+        ========================= */
+
         card.appendChild(wrapper);
 
         card.appendChild(checkbox);
 
-        card.appendChild(remove);
-
         card.appendChild(filename);
+
+        card.appendChild(remove);
 
         card.appendChild(addBetween);
 
+        card.appendChild(actions);
+
 
         /* =========================
-           DRAG & DROP
+           DRAGGING
         ========================= */
 
         card.addEventListener("dragstart", () => {
@@ -230,20 +353,20 @@ function renderImages() {
 
             event.preventDefault();
 
-            const targetIndex = index;
+            if (draggedIndex === null) {
+                return;
+            }
 
-            if (draggedIndex === null ||
-                draggedIndex === targetIndex) {
-
+            if (draggedIndex === index) {
                 return;
             }
 
 
-            const movedImage =
+            const moved =
                 images.splice(draggedIndex, 1)[0];
 
 
-            images.splice(targetIndex, 0, movedImage);
+            images.splice(index, 0, moved);
 
 
             selectedIndexes.clear();
@@ -258,9 +381,12 @@ function renderImages() {
     });
 
 
-    /* Add images card */
+    /* =========================
+       ADD IMAGE CARD
+    ========================= */
 
-    const addCard = document.createElement("div");
+    const addCard =
+        document.createElement("div");
 
     addCard.className = "empty-card";
 
@@ -287,30 +413,104 @@ function renderImages() {
 }
 
 
-/* =========================
+/* =====================================================
+   REMOVE
+===================================================== */
+
+function removeImage(index) {
+
+    images.splice(index, 1);
+
+    selectedIndexes.clear();
+
+    selectAll.checked = false;
+
+    renderImages();
+
+}
+
+
+/* =====================================================
+   DUPLICATE
+===================================================== */
+
+function duplicateImage(index) {
+
+    const original = images[index];
+
+    images.splice(index + 1, 0, {
+
+        file: original.file,
+
+        url: original.url
+
+    });
+
+
+    renderImages();
+
+}
+
+
+/* =====================================================
+   ROTATE
+===================================================== */
+
+function rotateImage(index) {
+
+    const img =
+        document.querySelectorAll(
+            ".image-wrapper img"
+        )[index];
+
+
+    if (!img) {
+        return;
+    }
+
+
+    const current =
+        parseInt(img.dataset.rotation || "0");
+
+
+    const next = current + 90;
+
+    img.dataset.rotation = next;
+
+    img.style.transform =
+        `rotate(${next}deg)`;
+
+}
+
+
+/* =====================================================
    SELECT ALL
-========================= */
+===================================================== */
 
 selectAll.addEventListener("change", () => {
 
     selectedIndexes.clear();
 
+
     if (selectAll.checked) {
 
         images.forEach((_, index) => {
+
             selectedIndexes.add(index);
+
         });
 
     }
+
 
     renderImages();
 
 });
 
 
-/* =========================
+/* =====================================================
    DELETE SELECTED
-========================= */
+===================================================== */
 
 deleteButton.addEventListener("click", () => {
 
@@ -320,8 +520,9 @@ deleteButton.addEventListener("click", () => {
 
 
     images =
-        images.filter((_, index) =>
-            !selectedIndexes.has(index)
+        images.filter(
+            (_, index) =>
+                !selectedIndexes.has(index)
         );
 
 
@@ -334,22 +535,24 @@ deleteButton.addEventListener("click", () => {
 });
 
 
-/* =========================
-   SORT BUTTON
-========================= */
+/* =====================================================
+   SORT
+===================================================== */
 
 sortButton.addEventListener("click", () => {
 
-    images.sort((a, b) =>
-        a.file.name.localeCompare(
+    images.sort((a, b) => {
+
+        return a.file.name.localeCompare(
             b.file.name,
             undefined,
             {
                 numeric: true,
                 sensitivity: "base"
             }
-        )
-    );
+        );
+
+    });
 
 
     selectedIndexes.clear();
@@ -359,29 +562,64 @@ sortButton.addEventListener("click", () => {
 });
 
 
-/* =========================
-   FINISH BUTTON
-========================= */
+/* =====================================================
+   GRID VIEW
+===================================================== */
+
+gridViewButton.addEventListener("click", () => {
+
+    currentView = "grid";
+
+    gridViewButton.classList.add("active");
+
+    listViewButton.classList.remove("active");
+
+    renderImages();
+
+});
+
+
+/* =====================================================
+   LIST VIEW
+===================================================== */
+
+listViewButton.addEventListener("click", () => {
+
+    currentView = "list";
+
+    listViewButton.classList.add("active");
+
+    gridViewButton.classList.remove("active");
+
+    renderImages();
+
+});
+
+
+/* =====================================================
+   FINISH
+===================================================== */
 
 finishButton.addEventListener("click", () => {
 
     if (images.length === 0) {
 
-        alert("Please add some images first.");
+        alert("Please add images first.");
 
         return;
+
     }
 
 
     alert(
-        "Great! Your images are ready. PDF generation is our next step."
+        "Images are ready. PDF generation is next!"
     );
 
 });
 
 
-/* =========================
-   INITIAL RENDER
-========================= */
+/* =====================================================
+   START
+===================================================== */
 
 renderImages();

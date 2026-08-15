@@ -4,17 +4,11 @@
     box-sizing: border-box;
 }
 
-
 body {
     font-family: Arial, Helvetica, sans-serif;
-
     background: #eef4ff;
-
     color: #222;
-
     min-height: 100vh;
-
-    overflow-x: hidden;
 }
 
 
@@ -24,115 +18,76 @@ body {
 
 .toolbar {
     height: 64px;
-
     background: white;
-
     border-bottom: 1px solid #d9dfe8;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding-left: 12px;
 
     position: sticky;
-
     top: 0;
-
     z-index: 100;
 }
-
 
 .toolbar-left,
 .toolbar-right {
     display: flex;
-
     align-items: center;
-
     height: 100%;
-
     gap: 8px;
 }
-
-
-/* =========================
-   BUTTONS
-========================= */
 
 .icon-button {
     width: 38px;
     height: 38px;
 
     border: none;
-
     background: white;
-
     border-radius: 6px;
 
     font-size: 25px;
-
     color: #555;
 
     cursor: pointer;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 }
-
 
 .icon-button:hover {
     background: #f0f2f5;
 }
 
-
 .delete-button {
     color: #999;
 }
 
-
 .divider {
     height: 32px;
-
     width: 1px;
-
     background: #ddd;
-
     margin: 0 5px;
 }
 
-
-/* =========================
-   SELECT BOXES
-========================= */
 
 select {
     height: 38px;
 
     border: 1px solid #d5d9df;
-
     background: white;
-
     border-radius: 6px;
 
     padding: 0 30px 0 12px;
 
     font-size: 14px;
-
     color: #333;
 
     cursor: pointer;
-
     outline: none;
-}
-
-
-select:hover {
-    border-color: #aaa;
 }
 
 
@@ -142,25 +97,20 @@ select:hover {
 
 .toggle-container {
     display: flex;
-
     align-items: center;
 
     gap: 10px;
 
     font-size: 14px;
 
-    color: #333;
-
     margin-right: 20px;
 
     cursor: pointer;
 }
 
-
 .toggle-container input {
     display: none;
 }
-
 
 .toggle {
     width: 32px;
@@ -171,10 +121,7 @@ select:hover {
     border-radius: 20px;
 
     position: relative;
-
-    transition: 0.2s;
 }
-
 
 .toggle::after {
     content: "";
@@ -190,15 +137,11 @@ select:hover {
 
     top: 2px;
     left: 2px;
-
-    transition: 0.2s;
 }
-
 
 .toggle-container input:checked + .toggle {
     background: #3d7cff;
 }
-
 
 .toggle-container input:checked + .toggle::after {
     left: 16px;
@@ -206,13 +149,13 @@ select:hover {
 
 
 /* =========================
-   FINISH BUTTON
+   FINISH
 ========================= */
 
 .finish-button {
     height: 64px;
 
-    min-width: 310px;
+    min-width: 300px;
 
     border: none;
 
@@ -227,16 +170,8 @@ select:hover {
     cursor: pointer;
 }
 
-
 .finish-button:hover {
     background: #0056dc;
-}
-
-
-.finish-button span {
-    font-size: 22px;
-
-    margin-left: 8px;
 }
 
 
@@ -248,34 +183,25 @@ select:hover {
     padding: 18px 16px 60px;
 }
 
-
 .workspace-top {
     height: 42px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 }
 
-
 .select-all {
     display: flex;
-
     align-items: center;
-
     gap: 10px;
 
     font-size: 14px;
 }
 
-
 .select-all input {
     width: 20px;
     height: 20px;
-
-    cursor: pointer;
 }
 
 
@@ -285,50 +211,31 @@ select:hover {
 
 .view-controls {
     display: flex;
-
     align-items: center;
-
-    gap: 8px;
+    gap: 5px;
 }
-
 
 .sort-button {
     height: 38px;
 
     border: 1px solid #d7dce3;
-
     background: white;
 
     border-radius: 7px;
 
     padding: 0 12px;
 
-    font-size: 14px;
-
     cursor: pointer;
 }
-
-
-.sort-button:hover {
-    background: #f7f8fa;
-}
-
-
-.sort-button .arrow {
-    margin-left: 8px;
-}
-
 
 .view-button {
     width: 40px;
     height: 38px;
 
     border: none;
-
     background: transparent;
 
     font-size: 21px;
-
     color: #777;
 
     border-radius: 6px;
@@ -336,17 +243,19 @@ select:hover {
     cursor: pointer;
 }
 
+.view-button:hover {
+    background: #e3ecff;
+}
 
 .view-button.active {
     background: #dce9ff;
-
     color: #1769ff;
 }
 
 
-/* =========================
-   IMAGE GRID
-========================= */
+/* =====================================================
+   GRID VIEW
+===================================================== */
 
 .image-grid {
     display: grid;
@@ -361,55 +270,35 @@ select:hover {
     padding: 20px 12px;
 }
 
-
-/* =========================
-   IMAGE CARD
-========================= */
-
 .image-card {
     position: relative;
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 
     cursor: grab;
 
     user-select: none;
-
-    transition: transform 0.15s;
 }
-
-
-.image-card:active {
-    cursor: grabbing;
-}
-
 
 .image-card.dragging {
     opacity: 0.35;
-
-    transform: scale(0.96);
 }
-
 
 .image-wrapper {
     width: 158px;
-
     height: 215px;
 
     background: white;
 
     border: 1px solid #dce0e6;
 
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.08);
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     overflow: hidden;
@@ -417,25 +306,17 @@ select:hover {
     position: relative;
 }
 
-
 .image-wrapper img {
     width: 100%;
-
     height: 100%;
 
     object-fit: contain;
 }
 
-
-/* =========================
-   CHECKBOX
-========================= */
-
 .card-checkbox {
     position: absolute;
 
     top: -7px;
-
     left: -7px;
 
     width: 23px;
@@ -448,20 +329,12 @@ select:hover {
     border-radius: 5px;
 
     z-index: 5;
-
-    cursor: pointer;
 }
-
-
-/* =========================
-   FILE NAME
-========================= */
 
 .file-name {
     margin-top: 8px;
 
     background: #dbe9ff;
-
     color: #1769d1;
 
     padding: 4px 9px;
@@ -480,15 +353,12 @@ select:hover {
 }
 
 
-/* =========================
-   REMOVE BUTTON
-========================= */
+/* Grid remove button */
 
 .remove-button {
     position: absolute;
 
     top: -12px;
-
     right: -12px;
 
     width: 28px;
@@ -511,25 +381,184 @@ select:hover {
     z-index: 10;
 }
 
-
 .image-card:hover .remove-button {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 }
 
 
-/* =========================
-   PLUS BETWEEN IMAGES
-========================= */
+/* =====================================================
+   LIST VIEW
+===================================================== */
+
+.image-grid.list-view {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+
+    padding: 20px 30px;
+}
+
+
+/* List row */
+
+.image-grid.list-view .image-card {
+    width: 100%;
+
+    height: 130px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e1e6ed;
+
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    padding: 15px 25px;
+
+    cursor: grab;
+
+    position: relative;
+}
+
+
+/* Drag handle */
+
+.image-grid.list-view .image-card::before {
+    content: "⋮⋮";
+
+    width: 35px;
+
+    font-size: 20px;
+
+    letter-spacing: 2px;
+
+    color: #555;
+
+    text-align: center;
+
+    margin-right: 20px;
+
+    cursor: grab;
+}
+
+
+/* List thumbnail */
+
+.image-grid.list-view .image-wrapper {
+    width: 70px;
+
+    height: 96px;
+
+    flex-shrink: 0;
+
+    box-shadow: none;
+
+    border: 1px solid #ddd;
+}
+
+
+/* List checkbox */
+
+.image-grid.list-view .card-checkbox {
+    position: relative;
+
+    top: auto;
+    left: auto;
+
+    margin-right: 30px;
+
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+
+    order: -1;
+}
+
+
+/* Filename */
+
+.image-grid.list-view .file-name {
+    margin: 0;
+
+    margin-left: 25px;
+
+    background: #dbe9ff;
+
+    padding: 5px 10px;
+
+    max-width: 300px;
+}
+
+
+/* List action buttons */
+
+.list-actions {
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+}
+
+.list-action {
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #555;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+}
+
+.list-action:hover {
+    background: #edf1f5;
+}
+
+.list-action.delete {
+    color: #555;
+}
+
+
+/* Hide grid remove button in list */
+
+.image-grid.list-view .remove-button {
+    display: none;
+}
+
+
+/* Hide plus buttons in list */
+
+.image-grid.list-view .add-between {
+    display: none;
+}
+
+
+/* =====================================================
+   ADD BETWEEN
+===================================================== */
 
 .add-between {
     position: absolute;
 
     right: -32px;
-
     top: 95px;
 
     width: 25px;
@@ -545,28 +574,20 @@ select:hover {
 
     font-size: 20px;
 
-    line-height: 20px;
-
     cursor: pointer;
+}
 
-    z-index: 5;
+.image-grid.list-view .add-between {
+    display: none;
 }
 
 
-.add-between:hover {
-    background: #397cff;
-
-    transform: scale(1.08);
-}
-
-
-/* =========================
+/* =====================================================
    EMPTY CARD
-========================= */
+===================================================== */
 
 .empty-card {
     width: 190px;
-
     height: 240px;
 
     border: 1px dashed #6f9cff;
@@ -578,7 +599,6 @@ select:hover {
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
     text-align: center;
@@ -588,15 +608,7 @@ select:hover {
     font-size: 14px;
 
     cursor: pointer;
-
-    border-radius: 4px;
 }
-
-
-.empty-card:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
-
 
 .empty-plus {
     width: 22px;
@@ -609,7 +621,6 @@ select:hover {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     font-size: 18px;
@@ -618,33 +629,29 @@ select:hover {
 }
 
 
-.empty-card strong {
-    font-weight: bold;
+/* Empty card in list */
 
-    font-size: 15px;
+.image-grid.list-view .empty-card {
+    align-self: center;
 }
 
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* =====================================================
+   MOBILE
+===================================================== */
 
-@media (max-width: 900px) {
-
-    .toolbar-left {
-        gap: 3px;
-    }
-
-    select {
-        padding: 0 8px;
-    }
+@media (max-width: 800px) {
 
     .finish-button {
-        min-width: 150px;
+        min-width: 160px;
     }
 
     .toggle-container {
         display: none;
+    }
+
+    select {
+        padding: 0 8px;
     }
 }
 
@@ -655,28 +662,38 @@ select:hover {
         overflow-x: auto;
     }
 
-    .toolbar-left {
-        min-width: max-content;
-    }
-
-    .toolbar-right {
-        min-width: max-content;
-    }
-
-    .finish-button {
-        min-width: 120px;
-    }
-
     .image-grid {
         grid-template-columns:
-            repeat(2, minmax(140px, 1fr));
+            repeat(2, minmax(130px, 1fr));
 
-        gap: 30px 20px;
+        gap: 25px 15px;
     }
 
-    .image-wrapper {
-        width: 140px;
+    .image-grid.list-view {
+        padding: 10px;
+    }
 
-        height: 190px;
+    .image-grid.list-view .image-card {
+        padding: 12px;
+
+        height: 110px;
+    }
+
+    .image-grid.list-view .image-card::before {
+        margin-right: 8px;
+    }
+
+    .image-grid.list-view .card-checkbox {
+        margin-right: 10px;
+    }
+
+    .image-grid.list-view .file-name {
+        margin-left: 12px;
+
+        max-width: 130px;
+    }
+
+    .list-actions {
+        gap: 5px;
     }
 }
