@@ -1,168 +1,192 @@
-const fileInput = document.getElementById("fileInput");
-const previewContainer = document.getElementById("previewContainer");
-const pdfButton = document.getElementById("pdfButton");
-const clearButton = document.getElementById("clearButton");
-const status = document.getElementById("status");
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+const createPdf = document.getElementById("createPdf");
+const downloadPdf = document.getElementById("downloadPdf");
 
-let images = [];
+let selectedImages = [];
 
-// Upload images
-fileInput.addEventListener("change", function () {
 
-    const files = Array.from(fileInput.files);
+// ===============================
+// ADD IMAGES
+// ===============================
 
-    files.forEach(file => {
+imageInput.addEventListener("change", function () {
 
-        if (!file.type.startsWith("image/")) {
-            return;
-        }
+    const newImages = Array.from(imageInput.files);
 
-        const reader = new FileReader();
+    selectedImages.push(...newImages);
 
-        reader.onload = function (event) {
+    renderImages();
 
-            images.push({
-                name: file.name,
-                data: event.target.result
-            });
+    imageInput.value = "";
 
-            displayImages();
-        };
-
-        reader.readAsDataURL(file);
-    });
-
-    fileInput.value = "";
 });
 
 
-// Display uploaded images
-function displayImages() {
+// ===============================
+// DISPLAY IMAGES
+// ===============================
 
-    previewContainer.innerHTML = "";
+function renderImages() {
 
-    images.forEach((image, index) => {
+    preview.innerHTML = "";
+
+    selectedImages.forEach((file, index) => {
 
         const card = document.createElement("div");
+
         card.className = "image-card";
 
-        card.innerHTML = `
-            <img src="${image.data}" alt="${image.name}">
+        card.draggable = true;
 
-            <button
-                class="remove-button"
-                onclick="removeImage(${index})"
-            >
-                ✕
-            </button>
+        card.dataset.index = index;
 
-            <div class="image-name">
-                ${image.name}
-            </div>
-        `;
 
-        previewContainer.appendChild(card);
+        // Image
+
+        const image = document.createElement("img");
+
+        image.src = URL.createObjectURL(file);
+
+
+        // Page number
+
+        const pageNumber = document.createElement("div");
+
+        pageNumber.className = "page-number";
+
+        pageNumber.textContent = `Page ${index + 1}`;
+
+
+        // Remove button
+
+        const removeButton = document.createElement("button");
+
+        removeButton.className = "remove-btn";
+
+        removeButton.textContent = "×";
+
+        removeButton.title = "Remove image";
+
+
+        removeButton.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            selectedImages.splice(index, 1);
+
+            renderImages();
+
+        });
+
+
+        card.appendChild(image);
+
+        card.appendChild(pageNumber);
+
+        card.appendChild(removeButton);
+
+        preview.appendChild(card);
+
+
+        // ===============================
+        // DRAG EVENTS
+        // ===============================
+
+        card.addEventListener("dragstart", function () {
+
+            card.classList.add("dragging");
+
+        });
+
+
+        card.addEventListener("dragend", function () {
+
+            card.classList.remove("dragging");
+
+        });
+
+
+        card.addEventListener("dragover", function (event) {
+
+            event.preventDefault();
+
+            const draggingCard =
+                document.querySelector(".dragging");
+
+            if (!draggingCard || draggingCard === card) {
+                return;
+            }
+
+            const cards =
+                [...preview.querySelectorAll(".image-card")];
+
+            const draggingIndex =
+                cards.indexOf(draggingCard);
+
+            const targetIndex =
+                cards.indexOf(card);
+
+
+            if (draggingIndex < targetIndex) {
+
+                preview.insertBefore(
+                    draggingCard,
+                    card.nextSibling
+                );
+
+            } else {
+
+                preview.insertBefore(
+                    draggingCard,
+                    card
+                );
+
+            }
+
+        });
+
+
+        card.addEventListener("drop", function (event) {
+
+            event.preventDefault();
+
+            updateImageOrder();
+
+        });
+
     });
+
+
+    // Enable / disable Create PDF
+
+    createPdf.disabled = selectedImages.length === 0;
+
 }
 
 
-// Remove image
-function removeImage(index) {
+// ===============================
+// UPDATE ARRAY AFTER DRAGGING
+// ===============================
 
-    images.splice(index, 1);
+function updateImageOrder() {
 
-    displayImages();
-}
+    const cards =
+        [...preview.querySelectorAll(".image-card")];
 
+    const newOrder = [];
 
-// Clear all images
-clearButton.addEventListener("click", function () {
+    cards.forEach(card => {
 
-    images = [];
+        const oldIndex =
+            parseInt(card.dataset.index);
 
-    displayImages();
+        newOrder.push(selectedImages[oldIndex]);
 
-    status.textContent = "";
-});
-
-
-// Create PDF
-pdfButton.addEventListener("click", async function () {
-
-    if (images.length === 0) {
-
-        status.textContent = "⚠️ Please upload at least one photo.";
-
-        return;
-    }
-
-    status.textContent = "⏳ Creating PDF...";
-
-    const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF();
-
-    for (let i = 0; i < images.length; i++) {
-
-        const image = images[i];
-
-        if (i > 0) {
-            pdf.addPage();
-        }
-
-        await addImageToPDF(pdf, image.data);
-    }
-
-    pdf.save("photos.pdf");
-
-    status.textContent = "✅ PDF created successfully!";
-});
-
-
-// Add image to PDF
-function addImageToPDF(pdf, imageData) {
-
-    return new Promise((resolve) => {
-
-        const img = new Image();
-
-        img.onload = function () {
-
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-
-            const margin = 10;
-
-            const maxWidth = pageWidth - margin * 2;
-            const maxHeight = pageHeight - margin * 2;
-
-            let width = img.width;
-            let height = img.height;
-
-            // Scale image to fit PDF page
-            const scale = Math.min(
-                maxWidth / width,
-                maxHeight / height
-            );
-
-            width *= scale;
-            height *= scale;
-
-            const x = (pageWidth - width) / 2;
-            const y = (pageHeight - height) / 2;
-
-            pdf.addImage(
-                imageData,
-                "JPEG",
-                x,
-                y,
-                width,
-                height
-            );
-
-            resolve();
-        };
-
-        img.src = imageData;
     });
+
+    selectedImages = newOrder;
+
+    renderImages();
+
 }
