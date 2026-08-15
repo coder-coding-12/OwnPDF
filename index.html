@@ -4,16 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Image to PDF Creator</title>
+    <title>Photo to PDF</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
 
-    <h1>Image to PDF Creator</h1>
+    <div class="container">
 
-    <p>Convert your images into a PDF easily.</p>
+        <h1>📸 Photo to PDF</h1>
+
+        <p class="subtitle">
+            Convert your photos into a PDF in seconds
+        </p>
+
+        <!-- Upload Area -->
+        <div class="upload-box" id="uploadBox">
+
+            <div class="upload-icon">📁</div>
+
+            <h2>Upload Photos</h2>
+
+            <p>PNG, JPG, JPEG, WEBP and more</p>
+
+            <label for="fileInput" class="upload-button">
+                Choose Photos
+            </label>
+
+            <input
+                type="file"
+                id="fileInput"
+                accept="image/*"
+                multiple
+                hidden
+            >
+
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+
+            <h2>Your Photos</h2>
+
+            <div id="previewContainer" class="preview-container">
+                <!-- Images will appear here -->
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="actions">
+
+            <button id="clearButton" class="clear-button">
+                🗑️ Clear All
+            </button>
+
+            <button id="pdfButton" class="pdf-button">
+                📄 Create PDF
+            </button>
+
+        </div>
+
+        <p id="status"></p>
+
+    </div>
 
     <script src="script.js"></script>
 
